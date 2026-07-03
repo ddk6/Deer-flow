@@ -789,6 +789,12 @@ Gateway artifact serving now forces active web content types (`text/html`, `appl
 
 This project is open source and available under the [MIT License](./LICENSE).
 
+## Rights and Attribution
+
+DFlow is a secondary development project based on the open-source DeerFlow project. The original DeerFlow copyrights and MIT License notices are retained in this repository.
+
+Code, documentation, skills, workflow designs, and other modifications added by ddk6 and DFlow contributors are maintained as DFlow contributions and, unless otherwise stated, are also released under the MIT License. Redistribution or further modification should retain the original DeerFlow notices, the MIT License, and this attribution statement.
+
 ## Acknowledgments
 
 DeerFlow is built upon the incredible work of the open-source community. We are deeply grateful to all the projects and contributors whose efforts have made DeerFlow possible. Truly, we stand on the shoulders of giants.

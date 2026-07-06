@@ -41,7 +41,33 @@ extensions_config.*.json
 # Coverage report
 coverage.xml
 coverage/
+
+# Local runtime data and private user content
+tmp/
+temp/
+.tmp/
 .deer-flow/
+backend/.deer-flow/
+backend/memory.json
+memory.json
+checkpoints.db*
+deerflow.db*
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+uploads/
+artifacts/
+outputs/
+workspace/
+backend/uploads/
+backend/artifacts/
+backend/outputs/
+backend/workspace/
+frontend/public/demo/threads/*/user-data/uploads/
+frontend/public/demo/threads/*/user-data/outputs/
 .claude/
 skills/custom/*
 logs/

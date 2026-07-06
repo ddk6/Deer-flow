@@ -104,6 +104,8 @@ class LLMErrorHandlingMiddleware(AgentMiddleware[AgentState]):
     retry_max_attempts: int = 3
     retry_base_delay_ms: int = 1000
     retry_cap_delay_ms: int = 8000
+    retry_rate_limit_base_delay_ms: int = 30000
+    retry_rate_limit_cap_delay_ms: int = 120000
 
     def __init__(self, *, app_config: AppConfig, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -214,6 +216,10 @@ class LLMErrorHandlingMiddleware(AgentMiddleware[AgentState]):
         retry_after = _extract_retry_after_ms(exc)
         if retry_after is not None:
             return retry_after
+        status_code = _extract_status_code(exc)
+        if status_code == 429:
+            backoff = self.retry_rate_limit_base_delay_ms * (2 ** max(0, attempt - 1))
+            return min(backoff, self.retry_rate_limit_cap_delay_ms)
         backoff = self.retry_base_delay_ms * (2 ** max(0, attempt - 1))
         return min(backoff, self.retry_cap_delay_ms)
 

@@ -149,6 +149,35 @@ def test_sync_model_call_uses_retry_after_header(monkeypatch: pytest.MonkeyPatch
     assert waits == [2.0]
 
 
+def test_rate_limit_uses_slow_backoff_without_retry_after() -> None:
+    middleware = _build_middleware(
+        retry_max_attempts=4,
+        retry_base_delay_ms=10,
+        retry_cap_delay_ms=10,
+        retry_rate_limit_base_delay_ms=30000,
+        retry_rate_limit_cap_delay_ms=120000,
+    )
+
+    assert middleware._build_retry_delay_ms(1, FakeError("rate limit", status_code=429)) == 30000
+    assert middleware._build_retry_delay_ms(2, FakeError("rate limit", status_code=429)) == 60000
+    assert middleware._build_retry_delay_ms(3, FakeError("rate limit", status_code=429)) == 120000
+    assert middleware._build_retry_delay_ms(4, FakeError("rate limit", status_code=429)) == 120000
+
+
+def test_non_rate_limit_keeps_standard_backoff() -> None:
+    middleware = _build_middleware(
+        retry_max_attempts=3,
+        retry_base_delay_ms=10,
+        retry_cap_delay_ms=25,
+        retry_rate_limit_base_delay_ms=30000,
+        retry_rate_limit_cap_delay_ms=120000,
+    )
+
+    assert middleware._build_retry_delay_ms(1, FakeError("server error", status_code=503)) == 10
+    assert middleware._build_retry_delay_ms(2, FakeError("server error", status_code=503)) == 20
+    assert middleware._build_retry_delay_ms(3, FakeError("server error", status_code=503)) == 25
+
+
 def test_sync_model_call_propagates_graph_bubble_up() -> None:
     middleware = _build_middleware()
 

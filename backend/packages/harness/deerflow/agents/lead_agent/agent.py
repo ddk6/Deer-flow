@@ -60,7 +60,8 @@ def _get_runtime_config(config: RunnableConfig) -> dict:
         cfg.update(context)
     return cfg
 
-#这是解析config.yaml中配置的模型名称的函数，如果请求的模型名称无效，则回退到默认模型名称。如果没有配置任何模型，则抛出异常。
+
+# 这是解析config.yaml中配置的模型名称的函数，如果请求的模型名称无效，则回退到默认模型名称。如果没有配置任何模型，则抛出异常。
 def _resolve_model_name(requested_model_name: str | None = None, *, app_config: AppConfig | None = None) -> str:
     """Resolve a runtime model name safely, falling back to default if invalid. Returns None if no models are configured."""
     app_config = app_config or get_app_config()
@@ -414,7 +415,9 @@ def _load_enabled_skills_for_tool_policy(available_skills: set[str] | None, *, a
         return skills
     return [skill for skill in skills if skill.name in available_skills]
 
-#这是整个文件的主要函数，负责创建一个Lead Agent实例。它首先获取运行时配置，然后根据配置和应用程序配置创建一个Lead Agent。
+
+# 这是整个文件的主要函数，负责创建一个Lead Agent实例。它首先获取运行时配置，然后根据配置和应用程序配置创建一个Lead Agent。
+
 
 def make_lead_agent(config: RunnableConfig):
     """LangGraph graph factory; keep the signature compatible with LangGraph Server."""
@@ -448,9 +451,9 @@ def _make_lead_agent(config: RunnableConfig, *, app_config: AppConfig):
 
     # Final model name resolution: request → agent config → global default, with fallback for unknown names
     model_name = _resolve_model_name(requested_model_name or agent_model_name, app_config=resolved_app_config)
-    #model_name的优先级顺序是：请求的模型名称 > 代理配置中的模型名称 > 全局默认模型名称。如果请求的模型名称无效，则回退到默认模型名称。如果没有配置任何模型，则抛出异常。
-    
-    #模型的配置是从应用程序配置中获取的，如果没有找到对应的模型配置，则抛出异常，提示用户需要在config.yaml中配置至少一个模型，或者在请求中提供有效的'model_name'/'model'。
+    # model_name的优先级顺序是：请求的模型名称 > 代理配置中的模型名称 > 全局默认模型名称。如果请求的模型名称无效，则回退到默认模型名称。如果没有配置任何模型，则抛出异常。
+
+    # 模型的配置是从应用程序配置中获取的，如果没有找到对应的模型配置，则抛出异常，提示用户需要在config.yaml中配置至少一个模型，或者在请求中提供有效的'model_name'/'model'。
     model_config = resolved_app_config.get_model_config(model_name)
 
     if model_config is None:
@@ -536,12 +539,12 @@ def _make_lead_agent(config: RunnableConfig, *, app_config: AppConfig):
     raw_tools = get_available_tools(model_name=model_name, groups=agent_config.tool_groups if agent_config else None, subagent_enabled=subagent_enabled, app_config=resolved_app_config)
     filtered = filter_tools_by_skill_allowed_tools(raw_tools + extra_tools, skills_for_tool_policy)
     final_tools, setup = assemble_deferred_tools(filtered, enabled=resolved_app_config.tool_search.enabled)
-    #这是整个agent的入口函数
-    #1.创建一个聊天模型实例，使用指定的模型名称、思考模式和应用程序配置。
-    #2.获取可用的工具列表，并根据技能策略进行过滤。
-    #3.构建中间件链，包括各种功能的中间件，如记忆管理、任务列表、标题生成等。
-    #4.应用系统提示模板，生成最终的系统提示。
-    #5.创建一个代理实例，传入模型、工具、中间件、系统提示和状态模式。
+    # 这是整个agent的入口函数
+    # 1.创建一个聊天模型实例，使用指定的模型名称、思考模式和应用程序配置。
+    # 2.获取可用的工具列表，并根据技能策略进行过滤。
+    # 3.构建中间件链，包括各种功能的中间件，如记忆管理、任务列表、标题生成等。
+    # 4.应用系统提示模板，生成最终的系统提示。
+    # 5.创建一个代理实例，传入模型、工具、中间件、系统提示和状态模式。
     return create_agent(
         model=create_chat_model(name=model_name, thinking_enabled=thinking_enabled, reasoning_effort=reasoning_effort, app_config=resolved_app_config, attach_tracing=False),
         tools=final_tools,
@@ -561,6 +564,8 @@ def _make_lead_agent(config: RunnableConfig, *, app_config: AppConfig):
             app_config=resolved_app_config,
             deferred_names=setup.deferred_names,
         ),
-        state_schema=ThreadState,#存储agent的状态信息，包括对话历史、工具调用记录、任务列表等。这个状态会在agent的生命周期中持续存在，允许agent在多轮对话中保持上下文和记忆
+        state_schema=ThreadState,  # 存储agent的状态信息，包括对话历史、工具调用记录、任务列表等。这个状态会在agent的生命周期中持续存在，允许agent在多轮对话中保持上下文和记忆
     )
-#测试提交
+
+
+# 测试提交

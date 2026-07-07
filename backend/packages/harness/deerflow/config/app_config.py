@@ -39,10 +39,10 @@ from deerflow.config.tool_config import ToolConfig, ToolGroupConfig
 from deerflow.config.tool_output_config import ToolOutputConfig
 from deerflow.config.tool_search_config import ToolSearchConfig, load_tool_search_config_from_dict
 
-#这个类是用来加载环境变量的，load_dotenv()函数会从当前目录下的.env文件中读取环境变量，并将其加载到系统环境中。
+# 这个类是用来加载环境变量的，load_dotenv()函数会从当前目录下的.env文件中读取环境变量，并将其加载到系统环境中。
 # 这样在代码中就可以通过os.getenv()等方法获取这些环境变量的值。
-#不是加载config.yaml，而是加载.env文件中的环境变量，这些环境变量可能会在config.yaml中被引用。
-#也就是说，config.yaml中可能会有一些值是通过环境变量来设置的，而这些环境变量的值就是从.env文件中读取的。
+# 不是加载config.yaml，而是加载.env文件中的环境变量，这些环境变量可能会在config.yaml中被引用。
+# 也就是说，config.yaml中可能会有一些值是通过环境变量来设置的，而这些环境变量的值就是从.env文件中读取的。
 
 load_dotenv()
 
